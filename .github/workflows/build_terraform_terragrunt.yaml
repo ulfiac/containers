@@ -1,0 +1,21 @@
+name: build-terraform-terragrunt
+run-name: "build terraform-terragrunt: ${{ github.event_name == 'push' && github.ref_name || 'manual' }}"
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'terraform-terragrunt-v*'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/reusable_build_container.yaml
+    permissions:
+      contents: read
+      packages: write
+    with:
+      image_name: terraform-terragrunt
+      context: terraform-terragrunt
