@@ -1,0 +1,38 @@
+name: build terragrunt-hcl-fmt
+run-name: "build terragrunt-hcl-fmt: ${{ inputs.terragrunt_version }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      terragrunt_version:
+        default: "1.0.8"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2, released 2026-01, checked 2026-06
+
+      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0, released 2026-05, checked 2026-06
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0, released 2026-05, checked 2026-06
+        with:
+          context: terragrunt-hcl-fmt
+          platforms: linux/amd64
+          push: true
+          build-args: TERRAGRUNT_VERSION=${{ inputs.terragrunt_version }}
+          tags: |
+            ghcr.io/ulfiac/terragrunt-hcl-fmt:${{ inputs.terragrunt_version }}
+            ghcr.io/ulfiac/terragrunt-hcl-fmt:latest
