@@ -1,4 +1,4 @@
-name: build-terraform-fmt
+name: build terraform-fmt
 
 on:
   workflow_dispatch:
