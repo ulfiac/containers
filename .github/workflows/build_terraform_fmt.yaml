@@ -1,13 +1,12 @@
 name: build terraform-fmt
-run-name: "build terraform-fmt: ${{ inputs.terraform_version }}"
 
 on:
   workflow_dispatch:
-    inputs:
-      terraform_version:
-        default: "1.15.6"
-        required: false
-        type: string
+  push:
+    branches:
+      - main
+    paths:
+      - terraform-fmt/.terraform-version
 
 permissions:
   contents: read
@@ -21,6 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
+      - name: Read Terraform version
+        id: version
+        run: echo "value=$(cat terraform-fmt/.terraform-version)" >> "$GITHUB_OUTPUT"
+
       - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
         with:
           registry: ghcr.io
@@ -32,7 +35,7 @@ jobs:
           context: terraform-fmt
           platforms: linux/amd64
           push: true
-          build-args: TERRAFORM_VERSION=${{ inputs.terraform_version }}
+          build-args: TERRAFORM_VERSION=${{ steps.version.outputs.value }}
           tags: |
-            ghcr.io/ulfiac/terraform-fmt:${{ inputs.terraform_version }}
+            ghcr.io/ulfiac/terraform-fmt:${{ steps.version.outputs.value }}
             ghcr.io/ulfiac/terraform-fmt:latest
