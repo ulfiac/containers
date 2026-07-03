@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - terraform-fmt/.terraform-version
+      - terraform-fmt/**
 
 permissions:
   contents: read
