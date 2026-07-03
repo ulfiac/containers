@@ -38,4 +38,3 @@ jobs:
           build-args: TERRAGRUNT_VERSION=${{ steps.version.outputs.value }}
           tags: |
             ghcr.io/ulfiac/terragrunt-hcl-fmt:${{ steps.version.outputs.value }}
-            ghcr.io/ulfiac/terragrunt-hcl-fmt:latest

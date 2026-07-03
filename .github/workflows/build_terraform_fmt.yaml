@@ -38,4 +38,3 @@ jobs:
           build-args: TERRAFORM_VERSION=${{ steps.version.outputs.value }}
           tags: |
             ghcr.io/ulfiac/terraform-fmt:${{ steps.version.outputs.value }}
-            ghcr.io/ulfiac/terraform-fmt:latest
