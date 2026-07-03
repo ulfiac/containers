@@ -6,6 +6,7 @@ on:
     branches:
       - main
     paths:
+      - .github/workflows/build_terraform_fmt.yaml
       - terraform-fmt/**
 
 permissions:
