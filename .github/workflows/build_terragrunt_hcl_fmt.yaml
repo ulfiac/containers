@@ -1,13 +1,12 @@
 name: build terragrunt-hcl-fmt
-run-name: "build terragrunt-hcl-fmt: ${{ inputs.terragrunt_version }}"
 
 on:
   workflow_dispatch:
-    inputs:
-      terragrunt_version:
-        default: "1.0.8"
-        required: false
-        type: string
+  push:
+    branches:
+      - main
+    paths:
+      - terragrunt-hcl-fmt/**
 
 permissions:
   contents: read
@@ -21,6 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
+      - name: Read Terragrunt version
+        id: version
+        run: echo "value=$(cat terragrunt-hcl-fmt/.terragrunt-version)" >> "$GITHUB_OUTPUT"
+
       - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
         with:
           registry: ghcr.io
@@ -32,7 +35,7 @@ jobs:
           context: terragrunt-hcl-fmt
           platforms: linux/amd64
           push: true
-          build-args: TERRAGRUNT_VERSION=${{ inputs.terragrunt_version }}
+          build-args: TERRAGRUNT_VERSION=${{ steps.version.outputs.value }}
           tags: |
-            ghcr.io/ulfiac/terragrunt-hcl-fmt:${{ inputs.terragrunt_version }}
+            ghcr.io/ulfiac/terragrunt-hcl-fmt:${{ steps.version.outputs.value }}
             ghcr.io/ulfiac/terragrunt-hcl-fmt:latest
