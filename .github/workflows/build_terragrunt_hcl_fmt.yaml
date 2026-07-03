@@ -6,6 +6,7 @@ on:
     branches:
       - main
     paths:
+      - .github/workflows/build_terragrunt_hcl_fmt.yaml
       - terragrunt-hcl-fmt/**
 
 permissions:
