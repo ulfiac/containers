@@ -18,8 +18,6 @@ jobs:
     permissions:
       contents: read      # checkout
       packages: write     # push image to GHCR
-      id-token: write     # get OIDC token for signing the attestation
-      attestations: write # create/upload provenance attestations (actions/attest)
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
@@ -34,7 +32,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
-        id: push
         with:
           context: tflint
           platforms: linux/amd64
@@ -42,9 +39,3 @@ jobs:
           build-args: TFLINT_VERSION=${{ steps.version.outputs.value }}
           tags: |
             ghcr.io/ulfiac/tflint:${{ steps.version.outputs.value }}
-
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
-        with:
-          subject-name: ghcr.io/ulfiac/tflint
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
