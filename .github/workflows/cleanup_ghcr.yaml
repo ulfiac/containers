@@ -1,0 +1,40 @@
+name: cleanup GHCR images
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # weekly, Sunday 02:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: cleanup-ghcr
+  cancel-in-progress: false
+
+permissions:
+  packages: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - terraform-fmt
+          - terragrunt-hcl-fmt
+          - tflint
+    steps:
+      - name: Delete untagged versions
+        uses: actions/delete-package-versions@e5bc658cc4c965c472efe991f8beea3981499c55 # v5.0.0
+        with:
+          package-name: ${{ matrix.package }}
+          package-type: container
+          delete-only-untagged-versions: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete old tagged versions, keep newest 3
+        uses: actions/delete-package-versions@e5bc658cc4c965c472efe991f8beea3981499c55 # v5.0.0
+        with:
+          package-name: ${{ matrix.package }}
+          package-type: container
+          min-versions-to-keep: 3
+          token: ${{ secrets.GITHUB_TOKEN }}
