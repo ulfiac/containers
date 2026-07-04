@@ -2,5 +2,19 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "tflint/.tflint-version"
+      ],
+      "matchStrings": [
+        "^(?<currentValue>\\S+)$"
+      ],
+      "depNameTemplate": "terraform-linters/tflint",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.*)$"
+    }
   ]
 }
