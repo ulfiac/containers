@@ -21,7 +21,7 @@ RUN set -eux; \
     curl -fsSL \
         "https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/SHA256SUMS" \
         -o SHA256SUMS; \
-    grep -F " ${BINARY}" SHA256SUMS > SHA256SUMS.filtered; \
+    grep " ${BINARY}$" SHA256SUMS > SHA256SUMS.filtered; \
     sha256sum -c SHA256SUMS.filtered; \
     install -m 0755 "${BINARY}" /usr/local/bin/terragrunt; \
     rm "${BINARY}" SHA256SUMS SHA256SUMS.filtered; \
