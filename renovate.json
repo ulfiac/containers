@@ -10,7 +10,7 @@
         "tflint/.tflint-version"
       ],
       "matchStrings": [
-        "^(?<currentValue>\\S+)$"
+        "^(?<currentValue>\\S+)"
       ],
       "depNameTemplate": "terraform-linters/tflint",
       "datasourceTemplate": "github-releases",
