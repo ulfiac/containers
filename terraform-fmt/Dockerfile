@@ -22,9 +22,10 @@ RUN set -eux; \
     curl -fsSL \
         "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_SHA256SUMS" \
         -o terraform_SHA256SUMS; \
-    grep "${ZIP}" terraform_SHA256SUMS | sha256sum -c; \
+    grep -F " ${ZIP}" terraform_SHA256SUMS > terraform_SHA256SUMS.filtered; \
+    sha256sum -c terraform_SHA256SUMS.filtered; \
     unzip "${ZIP}" -d /usr/local/bin; \
-    rm "${ZIP}" terraform_SHA256SUMS; \
+    rm "${ZIP}" terraform_SHA256SUMS terraform_SHA256SUMS.filtered; \
     terraform --version
 
 ENTRYPOINT ["terraform", "fmt"]
