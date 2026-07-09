@@ -20,6 +20,7 @@ jobs:
           - terraform-fmt
           - terragrunt-hcl-fmt
           - tflint
+          - utils
     steps:
       - name: Delete untagged versions
         run: |
