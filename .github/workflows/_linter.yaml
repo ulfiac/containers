@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   reusable-linter:
-    uses: ulfiac/commons/.github/workflows/reusable_linter.yaml@5f7d2e10a21193bb50d8f3b4bd76c299f7b354bc # v1.0.5
+    uses: ulfiac/commons/.github/workflows/reusable_linter.yaml@e88e32a21a8bfa5c701de365c44fe9c37a8d42a8 # v1.0.6
     with:
       terraform-fmt: false
       terragrunt-hcl-fmt: false
