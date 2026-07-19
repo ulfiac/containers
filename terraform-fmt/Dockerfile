@@ -28,4 +28,9 @@ RUN set -eux; \
     rm "${ZIP}" terraform_SHA256SUMS terraform_SHA256SUMS.filtered; \
     terraform --version
 
+RUN addgroup -g 1001 terraform && \
+    adduser -D -u 1001 -G terraform terraform
+
+USER terraform
+
 ENTRYPOINT ["terraform", "fmt"]

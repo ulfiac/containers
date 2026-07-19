@@ -27,4 +27,9 @@ RUN set -eux; \
     rm "${BINARY}" SHA256SUMS SHA256SUMS.filtered; \
     terragrunt --version
 
+RUN addgroup -g 1001 terragrunt && \
+    adduser -D -u 1001 -G terragrunt terragrunt
+
+USER terragrunt
+
 ENTRYPOINT ["terragrunt", "hcl", "fmt"]
