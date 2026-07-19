@@ -4,6 +4,6 @@ ignored:
     # future: renovate investigation needed
   - DL3003
     # DL3003 warning: Use WORKDIR to switch to a directory
-    # specifically instructed not to use WORKDIR in the Dockerfile(s)
-    # because github runners override the working directory to /github/workspace
-    # and setting WORKDIR in this case can cause issues with relative paths in the Dockerfile(s)
+    # In GitHub Actions, the repository workspace is bind-mounted into the container at /github/workspace and steps run from that path by default.
+    # Setting WORKDIR to a different location in these Dockerfiles can break relative paths that assume /github/workspace.
+    # We intentionally omit WORKDIR here and ignore DL3003 for these Dockerfile(s).
