@@ -1,0 +1,8 @@
+misconfigurations:
+  - id: AVD-DS-0026
+    paths:
+      - terraform-fmt/Dockerfile
+      - terragrunt-hcl-fmt/Dockerfile
+      - tflint/Dockerfile
+      - utils/Dockerfile
+    statement: These are CLI/tool containers, not long-running services; Docker HEALTHCHECK is not meaningful for their runtime model.
