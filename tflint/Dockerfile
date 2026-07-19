@@ -32,7 +32,14 @@ RUN set -eux; \
 
 # Copy config and pre-install plugins at build time
 COPY .tflint.hcl /etc/tflint/.tflint.hcl
-RUN mkdir -p "${TFLINT_PLUGIN_DIR}" && \
-    tflint --init --config /etc/tflint/.tflint.hcl
+
+RUN addgroup -g 1001 tflint && \
+    adduser -D -u 1001 -G tflint tflint && \
+    install -d -m 0755 -o tflint -g tflint "${TFLINT_PLUGIN_DIR}"
+
+USER tflint
+
+RUN tflint --init --config /etc/tflint/.tflint.hcl && \
+    tflint --version
 
 ENTRYPOINT ["tflint", "--config", "/etc/tflint/.tflint.hcl"]
