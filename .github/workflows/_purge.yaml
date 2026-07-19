@@ -10,5 +10,34 @@ permissions:
   contents: read
 
 jobs:
-  purge-logs:
+  purge-runs:
     uses: ulfiac/commons/.github/workflows/reusable_purge_workflow_logs.yaml@5f7d2e10a21193bb50d8f3b4bd76c299f7b354bc # v1.0.5
+
+  purge-packages:
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - terraform-fmt
+          - terragrunt-hcl-fmt
+          - tflint
+          - utils
+    steps:
+      - name: Delete untagged versions
+        run: |
+          gh api "/users/${{ github.repository_owner }}/packages/container/${{ matrix.package }}/versions" --paginate \
+            --jq '.[] | select(.metadata.container.tags | length == 0) | .id' \
+          | while read -r id; do
+              gh api -X DELETE "/users/${{ github.repository_owner }}/packages/container/${{ matrix.package }}/versions/${id}"
+            done
+
+      - name: Delete old tagged versions, keep newest 3
+        run: |
+          gh api "/users/${{ github.repository_owner }}/packages/container/${{ matrix.package }}/versions" \
+            --jq '[.[] | select(.metadata.container.tags | length > 0)] | sort_by(.updated_at) | reverse | .[3:][] | .id' \
+          | while read -r id; do
+              gh api -X DELETE "/users/${{ github.repository_owner }}/packages/container/${{ matrix.package }}/versions/${id}"
+            done
