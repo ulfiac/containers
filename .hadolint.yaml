@@ -1,0 +1,9 @@
+ignored:
+  - DL3018
+    # DL3018 warning: Pin versions in apk add. Instead of `apk add <package>` use `apk add <package>=<version>`
+    # future: renovate investigation needed
+  - DL3003
+    # DL3003 warning: Use WORKDIR to switch to a directory
+    # specifically instructed not to use WORKDIR in the Dockerfile(s)
+    # because github runners override the working directory to /github/workspace
+    # and setting WORKDIR in this case can cause issues with relative paths in the Dockerfile(s)
