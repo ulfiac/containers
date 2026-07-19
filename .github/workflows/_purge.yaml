@@ -2,7 +2,7 @@ name: _purge
 
 on:
   schedule:
-    - cron: '53 10 * * *' # run daily at 10:53 UTC
+    - cron: '53 8 * * 1'  # weekly, Monday 08:53 UTC (03:53 EST, 04:53 EDT)
   workflow_dispatch:
 
 permissions:
