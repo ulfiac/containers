@@ -1,0 +1,19 @@
+name: _linter
+run-name: "_linter: ${{ github.event_name == 'pull_request' && github.event.pull_request.title || github.ref_name }}"
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reusable-linter:
+    uses: ulfiac/commons/.github/workflows/reusable_linter.yaml@5f7d2e10a21193bb50d8f3b4bd76c299f7b354bc # v1.0.5
+    with:
+      terraform-fmt: false
+      terragrunt-hcl-fmt: false
+      tflint: false
