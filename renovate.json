@@ -1,10 +1,17 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "assignees": [
+    "ulfiac"
+  ],
   "extends": [
     "config:recommended"
   ],
   "labels": [
     "renovate"
+  ],
+  "prHourlyLimit": 5,
+  "reviewers": [
+    "ulfiac"
   ],
   "customManagers": [
     {
