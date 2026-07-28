@@ -19,26 +19,49 @@ jobs:
       contents: read      # checkout
       packages: write     # push image to GHCR
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Set build timestamp
+      - name: set build timestamp
         id: timestamp
         run: echo "value=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"
 
-      - uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
+      - name: login to ghcr.io
+        uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+      - name: build and load image
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: utils
-          platforms: linux/arm64
-          push: true
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ steps.timestamp.outputs.value }}
+          load: true
+          platforms: linux/arm64
+          push: false
+          tags: |
+            ghcr.io/ulfiac/utils:latest
+            ghcr.io/ulfiac/utils:${{ github.sha }}
+
+      - name: scan image
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          exit-code: '0'
+          image-ref: 'ghcr.io/ulfiac/utils:${{ github.sha }}'
+
+      - name: push image
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: utils
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ steps.timestamp.outputs.value }}
+          platforms: linux/arm64
+          push: true
           tags: |
             ghcr.io/ulfiac/utils:latest
             ghcr.io/ulfiac/utils:${{ github.sha }}
