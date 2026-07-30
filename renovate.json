@@ -3,28 +3,52 @@
   "assignees": [
     "ulfiac"
   ],
-  "extends": [
-    "config:recommended"
-  ],
-  "labels": [
-    "renovate"
-  ],
-  "prHourlyLimit": 5,
-  "reviewers": [
-    "ulfiac"
-  ],
   "customManagers": [
     {
       "customType": "regex",
+      "depNameTemplate": "terraform-linters/tflint",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.*)$",
       "managerFilePatterns": [
         "tflint/.tflint-version"
       ],
       "matchStrings": [
         "^(?<currentValue>\\S+)"
-      ],
-      "depNameTemplate": "terraform-linters/tflint",
-      "datasourceTemplate": "github-releases",
-      "extractVersionTemplate": "^v(?<version>.*)$"
+      ]
     }
-  ]
+  ],
+  "extends": [
+    "config:recommended",
+    "mergeConfidence:all-badges"
+  ],
+  "labels": [
+    "renovate"
+  ],
+  "packageRules": [
+    {
+      "groupName": "Monday updates",
+      "internalChecksFilter": "strict",
+      "matchPackageNames": [
+        "actions/checkout",
+        "alpine",
+        "aquasecurity/trivy-action",
+        "docker/build-push-action",
+        "docker/login-action",
+        "gruntwork-io/terragrunt",
+        "hashicorp/terraform",
+        "hadolint/hadolint-action",
+        "terraform-linters/tflint"
+      ],
+      "minimumReleaseAge": "7 days",
+      "prCreation": "not-pending",
+      "schedule": [
+        "before 9am on monday"
+      ]
+    }
+  ],
+  "prHourlyLimit": 5,
+  "reviewers": [
+    "ulfiac"
+  ],
+  "timezone": "America/New_York"
 }
