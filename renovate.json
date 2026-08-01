@@ -26,8 +26,7 @@
   ],
   "packageRules": [
     {
-      "groupName": "Monday updates",
-      "internalChecksFilter": "strict",
+      "groupName": "Monday packages",
       "matchPackageNames": [
         "actions/checkout",
         "alpine",
@@ -40,7 +39,6 @@
         "terraform-linters/tflint"
       ],
       "minimumReleaseAge": "7 days",
-      "prCreation": "not-pending",
       "schedule": [
         "before 9am on monday"
       ]
