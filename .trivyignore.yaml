@@ -3,6 +3,7 @@ misconfigurations:
     # DS-0026 (LOW): Add HEALTHCHECK instruction in your Dockerfile
     # You should add HEALTHCHECK instruction in your docker container images to perform the health check on running containers.
     paths:
+      - opentofu/Dockerfile
       - terraform-fmt/Dockerfile
       - terragrunt-hcl-fmt/Dockerfile
       - tflint/Dockerfile
