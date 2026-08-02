@@ -48,6 +48,7 @@
         "gruntwork-io/terragrunt",
         "hashicorp/terraform",
         "hadolint/hadolint-action",
+        "opentofu/opentofu",
         "terraform-linters/tflint"
       ],
       "minimumReleaseAge": "7 days",
