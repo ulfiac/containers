@@ -6,6 +6,18 @@
   "customManagers": [
     {
       "customType": "regex",
+      "depNameTemplate": "opentofu/opentofu",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.*)$",
+      "managerFilePatterns": [
+        "opentofu/.opentofu-version"
+      ],
+      "matchStrings": [
+        "^(?<currentValue>\\S+)"
+      ]
+    },
+    {
+      "customType": "regex",
       "depNameTemplate": "terraform-linters/tflint",
       "datasourceTemplate": "github-releases",
       "extractVersionTemplate": "^v(?<version>.*)$",
