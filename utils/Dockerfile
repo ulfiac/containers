@@ -25,5 +25,5 @@ RUN setcap 'cap_net_raw+eip' "$(command -v nmap)"
 RUN addgroup -g 1000 utils && \
     adduser -D -u 1000 -G utils utils
 
-USER utils
+USER 1000:1000
 WORKDIR /home/utils

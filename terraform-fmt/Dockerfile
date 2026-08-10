@@ -31,6 +31,6 @@ RUN set -eux; \
 RUN addgroup -g 1001 terraform && \
     adduser -D -u 1001 -G terraform terraform
 
-USER terraform
+USER 1001:1001
 
 ENTRYPOINT ["terraform", "fmt"]
