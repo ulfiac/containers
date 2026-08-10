@@ -37,7 +37,7 @@ RUN addgroup -g 1001 tflint && \
     adduser -D -u 1001 -G tflint tflint && \
     install -d -m 0755 -o tflint -g tflint "${TFLINT_PLUGIN_DIR}"
 
-USER tflint
+USER 1001:1001
 
 RUN tflint --init --config /etc/tflint/.tflint.hcl && \
     tflint --version
