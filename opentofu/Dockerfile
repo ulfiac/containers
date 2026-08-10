@@ -31,6 +31,6 @@ RUN set -eux; \
 RUN addgroup -g 1001 opentofu && \
     adduser -D -u 1001 -G opentofu opentofu
 
-USER opentofu
+USER 1001:1001
 
 ENTRYPOINT ["tofu"]

@@ -30,6 +30,6 @@ RUN set -eux; \
 RUN addgroup -g 1001 terragrunt && \
     adduser -D -u 1001 -G terragrunt terragrunt
 
-USER terragrunt
+USER 1001:1001
 
 ENTRYPOINT ["terragrunt", "hcl", "fmt"]
