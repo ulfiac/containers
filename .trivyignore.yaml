@@ -6,6 +6,7 @@ misconfigurations:
       - opentofu/Dockerfile
       - terraform-fmt/Dockerfile
       - terragrunt-hcl-fmt/Dockerfile
+      - terragrunt-runner/Dockerfile
       - tflint/Dockerfile
       - utils/Dockerfile
     statement: These are CLI/tool containers, not long-running services; Docker HEALTHCHECK is not meaningful for their runtime model.

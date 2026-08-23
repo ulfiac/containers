@@ -2,6 +2,9 @@ ignored:
   - DL3018
     # DL3018 warning: Pin versions in apk add. Instead of `apk add <package>` use `apk add <package>=<version>`
     # future: renovate investigation needed
+  - DL3008
+    # DL3008 warning: Pin versions in apt-get install. Instead of `apt-get install <package>` use `apt-get install <package>=<version>`
+    # future: renovate investigation needed
   - DL3003
     # DL3003 warning: Use WORKDIR to switch to a directory
     # In GitHub Actions, the repository workspace is bind-mounted into the container at /github/workspace and steps run from that path by default.

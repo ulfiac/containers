@@ -25,6 +25,7 @@ jobs:
           - opentofu
           - terraform-fmt
           - terragrunt-hcl-fmt
+          - terragrunt-runner
           - tflint
           - utils
     steps:
