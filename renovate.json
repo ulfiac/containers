@@ -43,6 +43,7 @@
         "actions/checkout",
         "alpine",
         "aquasecurity/trivy-action",
+        "debian",
         "docker/build-push-action",
         "docker/login-action",
         "gruntwork-io/terragrunt",
