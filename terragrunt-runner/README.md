@@ -57,6 +57,37 @@ paths that assume `$GITHUB_WORKSPACE`, so this Dockerfile intentionally omits it
 ignores hadolint's DL3003 for it, along with the other containers in this repo) —
 steps should reference `$GITHUB_WORKSPACE` rather than a fixed path.
 
+## Supporting packages
+
+Besides `terraform` and `terragrunt` themselves, the image installs:
+
+- `bsdextrautils` — provides `column`, which `infra`'s `show_tg_plan_summary.sh` and
+  `show_tg_apply_summary.sh` scripts use to align the plan/apply/destroy summary
+  tables. Missing this caused those steps to fail with `column: command not found`.
+- `ca-certificates` — root CA certificates, needed for `curl` (and for
+  terraform/terragrunt's own HTTPS calls, e.g. provider/module downloads) to verify
+  TLS certificates.
+- `curl` — downloads the terraform and terragrunt release archives and checksum files
+  during the image build.
+- `git` — terraform modules and terragrunt configs can reference git sources
+  directly, and `actions/checkout` prefers a real `git` binary when one is available.
+- `gnupg` — provides `gpg`, requested explicitly for this image alongside `shasum`.
+  `gpg`/`shasum` are used together by `infra`'s `add_gpg_public_key.sh` script (see
+  below).
+- `jq` — used by `dump_input_context.sh`/`dump_all_contexts.sh` to pretty-print the
+  JSON context dumps.
+- `perl` — not requested directly, but installs `shasum` as a side effect: Debian
+  bundles the `shasum` script with the full `perl` package (`perl-base` alone doesn't
+  include it). `shasum` was an explicit requirement for this image, alongside `gpg`.
+- `unzip` — extracts the terraform release `.zip` archive during the image build;
+  terragrunt ships as a plain binary and doesn't need it.
+
+`gpg` and `shasum` are both used by `infra`'s `add_gpg_public_key.sh` script (currently
+commented out in `reusable_terragrunt_action.yaml`, but can be uncommented if needed):
+it checksums (`shasum`) a base64-encoded GPG public key before use, so it can be
+imported (`gpg`) and supplied to the `user` terraform module. That module creates an
+AWS IAM user, and the initial login password needs a PGP public key to encrypt it.
+
 ## Non-root user
 
 The image runs as `1001:1001`, matching the convention of the other containers in this
