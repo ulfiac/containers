@@ -2,6 +2,12 @@ name: build terragrunt-runner
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/build_terragrunt_runner.yaml
+      - terragrunt-runner/**
   push:
     branches:
       - main
@@ -30,13 +36,6 @@ jobs:
         id: terragrunt_version
         run: echo "value=$(cat terragrunt-runner/.terragrunt-version)" >> "$GITHUB_OUTPUT"
 
-      - name: login to ghcr.io
-        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: build and load image
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
@@ -56,7 +55,19 @@ jobs:
           exit-code: '0'
           image-ref: 'ghcr.io/ulfiac/terragrunt-runner:${{ steps.terragrunt_version.outputs.value }}'
 
+      # pull request checks stop here; push to main keeps going
+      # -- see README.md "Build workflow doubles as a PR check"
+
+      - name: login to ghcr.io
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: push image
+        if: github.event_name != 'pull_request'
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           build-args: |
