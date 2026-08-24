@@ -1,0 +1,21 @@
+provider_installation {
+  filesystem_mirror {
+    path    = "/opt/terraform-providers-mirror"
+    include = [
+      "registry.terraform.io/hashicorp/aws",
+      "registry.terraform.io/hashicorp/archive",
+      "registry.terraform.io/hashicorp/local",
+      "registry.terraform.io/hashicorp/random",
+      "registry.terraform.io/integrations/github",
+    ]
+  }
+  direct {
+    exclude = [
+      "registry.terraform.io/hashicorp/aws",
+      "registry.terraform.io/hashicorp/archive",
+      "registry.terraform.io/hashicorp/local",
+      "registry.terraform.io/hashicorp/random",
+      "registry.terraform.io/integrations/github",
+    ]
+  }
+}

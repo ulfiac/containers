@@ -52,6 +52,20 @@ RUN set -eux; \
     rm "${BINARY}" SHA256SUMS SHA256SUMS.filtered; \
     terragrunt --version
 
+# Pre-mirror terraform providers so runtime `terraform init` never needs network access
+# -- see README.md "Pre-mirrored terraform providers".
+COPY providers.tf /tmp/provider-manifest/providers.tf
+RUN set -eux; \
+    terraform -chdir=/tmp/provider-manifest providers mirror \
+        -platform=linux_amd64 \
+        /opt/terraform-providers-mirror; \
+    rm -rf /tmp/provider-manifest
+
+COPY cli-config.tfrc /etc/terraform/cli-config.tfrc
+RUN chmod -R a+rX /opt/terraform-providers-mirror /etc/terraform
+
+ENV TF_CLI_CONFIG_FILE=/etc/terraform/cli-config.tfrc
+
 RUN addgroup --gid 1001 terragrunt-runner && \
     adduser --disabled-password --gecos "" --uid 1001 --gid 1001 terragrunt-runner
 

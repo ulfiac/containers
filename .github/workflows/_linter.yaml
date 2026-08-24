@@ -14,7 +14,6 @@ jobs:
   reusable-linter:
     uses: ulfiac/commons/.github/workflows/reusable_linter.yaml@bb1880ed369d1ce6684389461434d48d844ad938 # v1.0.17
     with:
-      terraform-fmt: false
       terragrunt-hcl-fmt: false
       tflint: false
 

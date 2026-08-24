@@ -96,6 +96,70 @@ repo. Non-root job containers can occasionally hit permission errors against
 `options: --user 0:0` to the consuming workflow's `container:` block, or switch this
 image to run as root.
 
+## Pre-mirrored terraform providers
+
+`ulfiac/infra` and `ulfiac/aws-bootstrap` pin `hashicorp/aws`, `hashicorp/archive`,
+`hashicorp/local`, `hashicorp/random`, and `integrations/github` at exact versions.
+Rather than let every `terraform init` re-download those providers from the registry on
+every job run, the image mirrors them at build time (`terraform providers mirror`, from
+`providers.tf`) into `/opt/terraform-providers-mirror`, and points Terraform at that
+mirror via a CLI config file (`cli-config.tfrc`, copied to
+`/etc/terraform/cli-config.tfrc` and referenced through the `TF_CLI_CONFIG_FILE` env
+var so it doesn't depend on `$HOME` or which UID the container runs as).
+
+`providers.tf` is not a real root module -- it exists solely so Renovate's built-in
+terraform manager (matches any `*.tf` file, no custom manager needed) has a
+`required_providers` block to bump, and so the Dockerfile has something concrete to
+mirror against.
+
+The CLI config's `direct` method excludes these 5 providers unconditionally, with no
+network fallback: if a consuming repo's actual required version ever drifts ahead of
+what's mirrored here (e.g. its own Renovate bumped first), `terraform init` fails loudly
+instead of silently falling back to a slower network download. That's intentional --
+it surfaces the drift immediately so the image gets rebuilt, rather than letting the
+"no download needed" benefit quietly erode unnoticed. Any provider *not* in this list
+still installs normally over the network, so new provider types can be added to a
+consuming repo before this image is updated to mirror them.
+
+We use the packed (zip) filesystem-mirror layout that `terraform providers mirror`
+produces natively, rather than manually unpacking it into the unpacked/symlink layout
+Terraform also supports -- the latter would save a small amount of per-job unzip time
+but isn't worth the added build complexity for 5 providers.
+
+## Linting `providers.tf`
+
+`providers.tf` is the only `*.tf` file in this repo, so `_linter.yaml` enables
+`terraform-fmt` (real value, zero false positives so far -- catches HCL formatting
+drift) but leaves `tflint` disabled. tflint's default rules assume `providers.tf` is a
+conventional root module: it expects `variables.tf`/`outputs.tf` and each declared
+provider to actually be used (a `provider {}` block or resource of that type). Since
+`providers.tf` is intentionally a manifest only, those warnings are permanent false
+positives rather than issues to fix.
+
+## Build workflow doubles as a PR check
+
+`build_terragrunt_runner.yaml` also runs on `pull_request` (not just `push`/
+`workflow_dispatch`), reusing the existing "build and load image" (`push: false,
+load: true`) and "scan image" (Trivy) steps unconditionally, so a PR touching
+`providers.tf`/the Dockerfile actually gets built and scanned before merge -- e.g.
+catching a Renovate-bumped provider version that no longer resolves. `login to
+ghcr.io` and `push image` are gated with `if: github.event_name != 'pull_request'`
+so PR runs never touch the registry, while manual `workflow_dispatch` runs still
+publish like before. This intentionally reuses the same build definition rather than
+a separate workflow, so there's no risk of the PR check drifting from what actually
+gets published.
+
+The job still declares `packages: write` at the job level, so that permission is
+technically present (though unused by any step) during `pull_request` runs too --
+GitHub Actions has no per-step permission scoping, only per-job. The stricter fix is
+to split this into a read-only build/scan job plus a separate push-only job, but that
+costs the free layer-cache reuse the "push image" step currently gets from "build and
+load image" running in the same job. Left as a single job for now: this repo has a
+single, 2FA-protected contributor and no external PRs, so the main residual risk is
+generic supply-chain (a compromised pinned action/base image), which the split
+wouldn't fully close either -- it would only shrink how often the elevated token is
+present. Revisit if this repo ever accepts outside contributions.
+
 ## Versioning
 
 `terraform` and `terragrunt` versions are read from `.terraform-version` and

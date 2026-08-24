@@ -47,8 +47,13 @@
         "docker/build-push-action",
         "docker/login-action",
         "gruntwork-io/terragrunt",
+        "hashicorp/archive",
+        "hashicorp/aws",
+        "hashicorp/local",
+        "hashicorp/random",
         "hashicorp/terraform",
         "hadolint/hadolint-action",
+        "integrations/github",
         "opentofu/opentofu",
         "terraform-linters/tflint"
       ],
