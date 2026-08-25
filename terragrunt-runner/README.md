@@ -1,6 +1,6 @@
 # terragrunt-runner
 
-Bundles `terraform` and `terragrunt` (plus `git`, `gnupg`, `shasum`, `jq`) for use as a
+Bundles `terraform` and `terragrunt` (plus `git`, `jq`) for use as a
 GitHub Actions **job container**, replacing the pinned `hashicorp/setup-terraform` and
 `gruntwork-io/terragrunt-action` actions in `ulfiac/infra`'s
 `reusable_terragrunt_action.yaml`.
@@ -71,22 +71,10 @@ Besides `terraform` and `terragrunt` themselves, the image installs:
   during the image build.
 - `git` — terraform modules and terragrunt configs can reference git sources
   directly, and `actions/checkout` prefers a real `git` binary when one is available.
-- `gnupg` — provides `gpg`, requested explicitly for this image alongside `shasum`.
-  `gpg`/`shasum` are used together by `infra`'s `add_gpg_public_key.sh` script (see
-  below).
 - `jq` — used by `dump_input_context.sh`/`dump_all_contexts.sh` to pretty-print the
   JSON context dumps.
-- `perl` — not requested directly, but installs `shasum` as a side effect: Debian
-  bundles the `shasum` script with the full `perl` package (`perl-base` alone doesn't
-  include it). `shasum` was an explicit requirement for this image, alongside `gpg`.
 - `unzip` — extracts the terraform release `.zip` archive during the image build;
   terragrunt ships as a plain binary and doesn't need it.
-
-`gpg` and `shasum` are both used by `infra`'s `add_gpg_public_key.sh` script (currently
-commented out in `reusable_terragrunt_action.yaml`, but can be uncommented if needed):
-it checksums (`shasum`) a base64-encoded GPG public key before use, so it can be
-imported (`gpg`) and supplied to the `user` terraform module. That module creates an
-AWS IAM user, and the initial login password needs a PGP public key to encrypt it.
 
 ## Non-root user
 
@@ -171,7 +159,7 @@ regex manager needed). The published image tag tracks the terragrunt version onl
 actual product of this image (their specific version affects plan/apply behavior) and
 they're fetched by direct download + checksum verification, which Renovate can track
 cleanly via a plain version file. The supporting packages (`ca-certificates`, `curl`,
-`git`, `gnupg`, `jq`, `perl`, `unzip`) are installed unpinned via `apt-get install`,
+`git`, `jq`, `unzip`) are installed unpinned via `apt-get install`,
 consistent with every other container in this repo (see the DL3008/DL3018 ignores in
 `.hadolint.yaml`): Renovate has no clean way to track individual apt/apk package
 versions pinned inline in a `RUN` command, and their exact versions don't materially
