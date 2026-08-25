@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   purge-runs:
-    uses: ulfiac/commons/.github/workflows/reusable_purge_workflow_logs.yaml@bb1880ed369d1ce6684389461434d48d844ad938 # v1.0.17
+    uses: ulfiac/commons/.github/workflows/reusable_purge_workflow_logs.yaml@6976c2ffb5336bc6eb40570a5a04ddbcc0e146d1 # v1.0.18
 
   purge-packages:
     runs-on: ubuntu-24.04
