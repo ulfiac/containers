@@ -20,6 +20,7 @@ permissions:
 
 jobs:
   build-and-push-image:
+    name: ${{ github.event_name == 'pull_request' && 'build image as PR check' || 'build and push image' }}
     runs-on: ubuntu-24.04
     permissions:
       contents: read      # checkout
