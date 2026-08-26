@@ -19,8 +19,8 @@ permissions:
   contents: read
 
 jobs:
-  build-and-push-image:
-    name: ${{ github.event_name == 'pull_request' && 'build image as PR check' || 'build and push image' }}
+  build-image:
+    name: ${{ github.event_name == 'pull_request' && 'build image as a PR check' || 'build image and push' }}
     runs-on: ubuntu-24.04
     permissions:
       contents: read      # checkout
