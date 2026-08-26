@@ -50,8 +50,7 @@ RUN set -eux; \
     rm "${BINARY}" SHA256SUMS SHA256SUMS.filtered; \
     terragrunt --version
 
-# Pre-mirror terraform providers so runtime `terraform init` never needs network access
-# -- see README.md "Pre-mirrored terraform providers".
+# Install Terraform providers (as a providers mirror) -- see README.md "Pre-mirrored terraform providers"
 COPY providers.tf /tmp/provider-manifest/providers.tf
 RUN set -eux; \
     terraform -chdir=/tmp/provider-manifest providers mirror \

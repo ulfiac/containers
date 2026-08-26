@@ -1,6 +1,5 @@
 # Manifest only, not a real root module -- see README.md "Pre-mirrored terraform providers".
 terraform {
-  # keep in sync with .terraform-version
   required_version = "1.15.8"
 
   required_providers {
