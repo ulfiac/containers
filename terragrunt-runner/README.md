@@ -126,27 +126,11 @@ positives rather than issues to fix.
 
 ## Build workflow doubles as a PR check
 
-`build_terragrunt_runner.yaml` also runs on `pull_request` (not just `push`/
-`workflow_dispatch`), reusing the existing "build and load image" (`push: false,
-load: true`) and "scan image" (Trivy) steps unconditionally, so a PR touching
-`providers.tf`/the Dockerfile actually gets built and scanned before merge -- e.g.
-catching a Renovate-bumped provider version that no longer resolves. `login to
-ghcr.io` and `push image` are gated with `if: github.event_name != 'pull_request'`
-so PR runs never touch the registry, while manual `workflow_dispatch` runs still
-publish like before. This intentionally reuses the same build definition rather than
-a separate workflow, so there's no risk of the PR check drifting from what actually
-gets published.
-
-The job still declares `packages: write` at the job level, so that permission is
-technically present (though unused by any step) during `pull_request` runs too --
-GitHub Actions has no per-step permission scoping, only per-job. The stricter fix is
-to split this into a read-only build/scan job plus a separate push-only job, but that
-costs the free layer-cache reuse the "push image" step currently gets from "build and
-load image" running in the same job. Left as a single job for now: this repo has a
-single, 2FA-protected contributor and no external PRs, so the main residual risk is
-generic supply-chain (a compromised pinned action/base image), which the split
-wouldn't fully close either -- it would only shrink how often the elevated token is
-present. Revisit if this repo ever accepts outside contributions.
+`build_terragrunt_runner.yaml` follows the same shared pattern as every other build
+workflow in this repo -- see
+[containers/README.md](../README.md#build-workflow-doubles-as-a-pr-check) for the
+full rationale (PR-triggered build+scan, conditional login/push, the `packages:
+write` trade-off).
 
 ## Versioning
 
