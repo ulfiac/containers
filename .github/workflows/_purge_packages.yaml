@@ -1,8 +1,8 @@
-name: _purge
+name: _purge_packages
 
 on:
   schedule:
-    - cron: '53 8 * * *'  # daily, 08:53 UTC (03:53 EST, 04:53 EDT)
+    - cron: '51 8 * * *'  # daily, 08:51 UTC (03:51 EST, 04:51 EDT)
   workflow_dispatch:
 
 permissions:
@@ -11,9 +11,6 @@ permissions:
   packages: write
 
 jobs:
-  purge-runs:
-    uses: ulfiac/commons/.github/workflows/reusable_purge_workflow_logs.yaml@ba541ce51bc3c6a9c6f4bea73e8c6b0f9917eed5 # v1.0.20
-
   purge-packages:
     runs-on: ubuntu-24.04
     env:

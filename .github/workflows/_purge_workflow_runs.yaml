@@ -1,0 +1,15 @@
+name: _purge_workflow_runs
+
+on:
+  schedule:
+    - cron: '53 8 * * *'  # daily, 08:53 UTC (03:53 EST, 04:53 EDT)
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+  packages: write
+
+jobs:
+  purge-workflow-runs:
+    uses: ulfiac/commons/.github/workflows/reusable_purge_workflow_runs.yaml@ba541ce51bc3c6a9c6f4bea73e8c6b0f9917eed5 # v1.0.20
