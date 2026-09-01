@@ -57,6 +57,7 @@
         "opentofu/opentofu",
         "terraform-linters/tflint"
       ],
+      "automerge": true,
       "minimumReleaseAge": "7 days",
       "schedule": [
         "before 9am on monday"
