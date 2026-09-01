@@ -38,7 +38,6 @@
   ],
   "packageRules": [
     {
-      "automerge": true,
       "groupName": "Monday packages",
       "matchPackageNames": [
         "actions/checkout",
@@ -65,7 +64,7 @@
     },
     {
       "automerge": true,
-      "groupName": "Commons packages",
+      "groupName": "commons packages",
       "matchPackageNames": [
         "ulfiac/commons"
       ]
