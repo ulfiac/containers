@@ -58,12 +58,14 @@
         "terraform-linters/tflint"
       ],
       "minimumReleaseAge": "7 days",
+      "reviewers": [
+        "ulfiac"
+      ],
       "schedule": [
         "before 9am on monday"
       ]
     },
     {
-      "automerge": true,
       "groupName": "commons packages",
       "matchPackageNames": [
         "ulfiac/commons"
@@ -71,8 +73,5 @@
     }
   ],
   "prHourlyLimit": 5,
-  "reviewers": [
-    "ulfiac"
-  ],
   "timezone": "America/New_York"
 }
