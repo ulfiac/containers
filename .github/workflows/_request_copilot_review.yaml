@@ -1,0 +1,22 @@
+name: _request_copilot_review
+run-name: "_request_copilot_review: ${{ github.event.pull_request.title }}"
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+concurrency:
+  group: request-copilot-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  pull-requests: write
+
+jobs:
+  reusable-request-copilot-review:
+    uses: ulfiac/commons/.github/workflows/reusable_request_copilot_review.yaml@86b40df45927518a32a965cb22175452e51d5129 # v1.0.36
+    secrets:
+      PAT_REQUEST_COPILOT_REVIEW: ${{ secrets.PAT_REQUEST_COPILOT_REVIEW }}
