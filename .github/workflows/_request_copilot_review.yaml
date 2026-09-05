@@ -12,8 +12,7 @@ concurrency:
   group: request-copilot-review-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
-permissions:
-  pull-requests: write
+permissions: {}
 
 jobs:
   reusable-request-copilot-review:
