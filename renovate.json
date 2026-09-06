@@ -1,8 +1,5 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "assignees": [
-    "ulfiac"
-  ],
   "customManagers": [
     {
       "customType": "regex",
@@ -58,6 +55,9 @@
         "terraform-linters/tflint"
       ],
       "minimumReleaseAge": "7 days",
+      "reviewers": [
+        "ulfiac"
+      ],
       "schedule": [
         "before 9am on monday"
       ]
