@@ -24,6 +24,17 @@
       "matchStrings": [
         "^(?<currentValue>\\S+)"
       ]
+    },
+    {
+      "customType": "regex",
+      "depNameTemplate": "aws/aws-cli",
+      "datasourceTemplate": "github-tags",
+      "managerFilePatterns": [
+        "terragrunt-runner/.aws-cli-version"
+      ],
+      "matchStrings": [
+        "^(?<currentValue>\\S+)"
+      ]
     }
   ],
   "extends": [
@@ -40,6 +51,7 @@
         "actions/checkout",
         "alpine",
         "aquasecurity/trivy-action",
+        "aws/aws-cli",
         "debian",
         "docker/build-push-action",
         "docker/login-action",

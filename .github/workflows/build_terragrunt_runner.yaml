@@ -37,12 +37,17 @@ jobs:
         id: terragrunt_version
         run: echo "value=$(cat terragrunt-runner/.terragrunt-version)" >> "$GITHUB_OUTPUT"
 
+      - name: read aws-cli version
+        id: aws_cli_version
+        run: echo "value=$(cat terragrunt-runner/.aws-cli-version)" >> "$GITHUB_OUTPUT"
+
       - name: build and load image
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           build-args: |
             TERRAFORM_VERSION=${{ steps.terraform_version.outputs.value }}
             TERRAGRUNT_VERSION=${{ steps.terragrunt_version.outputs.value }}
+            AWS_CLI_VERSION=${{ steps.aws_cli_version.outputs.value }}
           context: terragrunt-runner
           load: true
           platforms: linux/amd64
@@ -74,6 +79,7 @@ jobs:
           build-args: |
             TERRAFORM_VERSION=${{ steps.terraform_version.outputs.value }}
             TERRAGRUNT_VERSION=${{ steps.terragrunt_version.outputs.value }}
+            AWS_CLI_VERSION=${{ steps.aws_cli_version.outputs.value }}
           context: terragrunt-runner
           platforms: linux/amd64
           push: true
