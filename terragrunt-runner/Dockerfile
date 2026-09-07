@@ -2,9 +2,10 @@ FROM debian:bookworm-slim@sha256:abd67ffcfa541b485a3dff59865ab629aa048a6c613e639
 
 ARG TERRAFORM_VERSION
 ARG TERRAGRUNT_VERSION
+ARG AWS_CLI_VERSION
 
 LABEL org.opencontainers.image.title="terragrunt-runner" \
-      org.opencontainers.image.description="terraform and terragrunt" \
+      org.opencontainers.image.description="terraform, terragrunt, and the AWS CLI" \
       org.opencontainers.image.source="https://github.com/ulfiac/containers"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -12,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
     git \
+    gnupg \
     jq \
     unzip \
     && rm -rf /var/lib/apt/lists/*
@@ -49,6 +51,23 @@ RUN set -eux; \
     install -m 0755 "${BINARY}" /usr/local/bin/terragrunt; \
     rm "${BINARY}" SHA256SUMS SHA256SUMS.filtered; \
     terragrunt --version
+
+# Install AWS CLI -- see README.md "Why the AWS CLI is included"
+COPY aws-cli-pubkey.asc /tmp/aws-cli-pubkey.asc
+RUN set -eux; \
+    ARCH="x86_64"; \
+    ZIP="awscli-exe-linux-${ARCH}-${AWS_CLI_VERSION}.zip"; \
+    cd /tmp; \
+    curl -fsSL "https://awscli.amazonaws.com/${ZIP}" -o "${ZIP}"; \
+    curl -fsSL "https://awscli.amazonaws.com/${ZIP}.sig" -o "${ZIP}.sig"; \
+    GNUPGHOME="$(mktemp -d)"; \
+    export GNUPGHOME; \
+    gpg --import aws-cli-pubkey.asc; \
+    gpg --verify "${ZIP}.sig" "${ZIP}"; \
+    unzip -q "${ZIP}"; \
+    ./aws/install; \
+    rm -rf "${ZIP}" "${ZIP}.sig" aws aws-cli-pubkey.asc "$GNUPGHOME"; \
+    aws --version
 
 # Install Terraform providers (as a providers mirror) -- see README.md "Pre-mirrored terraform providers"
 COPY providers.tf /tmp/provider-manifest/providers.tf

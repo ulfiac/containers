@@ -1,6 +1,6 @@
 # terragrunt-runner
 
-Bundles `terraform` and `terragrunt` (plus `git`, `jq`) for use as a
+Bundles `terraform`, `terragrunt`, and the AWS CLI (plus `git`, `jq`) for use as a
 GitHub Actions **job container**, replacing the pinned `hashicorp/setup-terraform` and
 `gruntwork-io/terragrunt-action` actions in `ulfiac/infra`'s
 `reusable_terragrunt_action.yaml`.
@@ -29,12 +29,19 @@ job's existing scripts (`dump_input_context.sh`, `show_tg_plan_summary.sh`, etc.
 `#!/bin/bash` and use `jq`, neither of which ship with alpine by default. debian gives
 us all of this natively, so we used it instead of alpine plus workarounds.
 
-## Why no AWS CLI
+## Why the AWS CLI is included
 
 `aws-actions/configure-aws-credentials` uses the AWS JavaScript SDK directly and never
 shells out to the `aws` CLI, and nothing in the terraform/terragrunt run path (S3
-backend, AWS provider) calls it either — those use their own Go SDK. The image
-intentionally omits `awscli`.
+backend, AWS provider) calls it either -- those use their own Go SDK. However,
+`ulfiac/aws-bootstrap`'s `import_bootstrap.sh` script (run as a step in this container)
+shells out to `aws` directly (`aws sts get-caller-identity`, `aws iam ...`,
+`aws s3api ...`) to check whether resources already exist before importing them, so the
+image installs the AWS CLI v2 command line installer, pinned to a version and verified
+against AWS's published PGP signature (`aws-cli-pubkey.asc`, matching the public key
+documented at
+[docs.aws.amazon.com](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html),
+fingerprint `FB5D B77F D5C1 18B8 0511 ADA8 A631 0ACC 4672 475C`).
 
 ## Why no ENTRYPOINT
 
@@ -59,7 +66,7 @@ steps should reference `$GITHUB_WORKSPACE` rather than a fixed path.
 
 ## Supporting packages
 
-Besides `terraform` and `terragrunt` themselves, the image installs:
+Besides `terraform`, `terragrunt`, and the AWS CLI themselves, the image installs:
 
 - `bsdextrautils` — provides `column`, which `infra`'s `show_tg_plan_summary.sh` and
   `show_tg_apply_summary.sh` scripts use to align the plan/apply/destroy summary
@@ -67,14 +74,16 @@ Besides `terraform` and `terragrunt` themselves, the image installs:
 - `ca-certificates` — root CA certificates, needed for `curl` (and for
   terraform/terragrunt's own HTTPS calls, e.g. provider/module downloads) to verify
   TLS certificates.
-- `curl` — downloads the terraform and terragrunt release archives and checksum files
-  during the image build.
+- `curl` — downloads the terraform, terragrunt, and AWS CLI release archives and
+  checksum/signature files during the image build.
 - `git` — terraform modules and terragrunt configs can reference git sources
   directly, and `actions/checkout` prefers a real `git` binary when one is available.
+- `gnupg` — verifies the AWS CLI installer's PGP signature at build time (AWS doesn't
+  publish a plain SHA256SUMS file for it the way HashiCorp does for terraform).
 - `jq` — used by `dump_input_context.sh`/`dump_all_contexts.sh` to pretty-print the
   JSON context dumps.
-- `unzip` — extracts the terraform release `.zip` archive during the image build;
-  terragrunt ships as a plain binary and doesn't need it.
+- `unzip` — extracts the terraform and AWS CLI release `.zip` archives during the
+  image build; terragrunt ships as a plain binary and doesn't need it.
 
 ## Non-root user
 
@@ -139,11 +148,20 @@ write` trade-off).
 Renovate's built-in `terraform-version`/`terragrunt-version` managers (no custom
 regex manager needed). The published image tag tracks the terragrunt version only.
 
-`terraform` and `terragrunt` are the only tools versioned this way, because they're the
-actual product of this image (their specific version affects plan/apply behavior) and
-they're fetched by direct download + checksum verification, which Renovate can track
-cleanly via a plain version file. The supporting packages (`ca-certificates`, `curl`,
-`git`, `jq`, `unzip`) are installed unpinned via `apt-get install`,
+The AWS CLI version is read from `.aws-cli-version` at build time, tracked by a custom
+regex manager in `renovate.json` (datasource `github-tags` against `aws/aws-cli`). This
+uses `github-tags` rather than the `github-releases` datasource used for
+`.opentofu-version`/`.tflint-version`, because `aws/aws-cli` only publishes its actual
+CLI versions (e.g. `2.36.40`) as plain git tags -- its GitHub Releases list contains
+just one old `2.0.0dev0` preview release, so `github-releases` would never find a
+newer version to bump to. `aws/aws-cli`'s tags also have no `v` prefix, so no
+`extractVersionTemplate` is needed (unlike `opentofu`/`tflint`).
+
+`terraform`, `terragrunt`, and the AWS CLI are the only tools versioned this way,
+because they're fetched by direct download + checksum/signature verification, which
+Renovate can track cleanly via a plain version file, and their specific versions
+materially affect this job's behavior. The supporting packages (`ca-certificates`,
+`curl`, `git`, `gnupg`, `jq`, `unzip`) are installed unpinned via `apt-get install`,
 consistent with every other container in this repo (see the DL3008/DL3018 ignores in
 `.hadolint.yaml`): Renovate has no clean way to track individual apt/apk package
 versions pinned inline in a `RUN` command, and their exact versions don't materially
