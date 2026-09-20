@@ -81,6 +81,16 @@
       "matchPackageNames": [
         "ulfiac/commons"
       ]
+    },
+    {
+      "description": "actionlint 1.7.12 does not support ubuntu-26.04 runners; pin until it does (see ulfiac/commons#200)",
+      "matchDepTypes": [
+        "github-runner"
+      ],
+      "matchPackageNames": [
+        "ubuntu"
+      ],
+      "allowedVersions": "24.04"
     }
   ],
   "prHourlyLimit": 5,
