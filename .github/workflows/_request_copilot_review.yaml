@@ -16,6 +16,6 @@ permissions: {}
 
 jobs:
   reusable-request-copilot-review:
-    uses: ulfiac/commons/.github/workflows/reusable_request_copilot_review.yaml@c9a73fa7b2ca8c1117f4986e3a2fd12c92bc1aad # v1.0.46
+    uses: ulfiac/commons/.github/workflows/reusable_request_copilot_review.yaml@1ef698821e7809a85c4cdfecefa17a747164a251 # v1.0.47
     secrets:
       PAT_REQUEST_COPILOT_REVIEW: ${{ secrets.PAT_REQUEST_COPILOT_REVIEW }}
