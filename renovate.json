@@ -64,7 +64,8 @@
         "hadolint/hadolint-action",
         "integrations/github",
         "opentofu/opentofu",
-        "terraform-linters/tflint"
+        "terraform-linters/tflint",
+        "terraform-linters/tflint-ruleset-aws"
       ],
       "minimumReleaseAge": "7 days",
       "reviewers": [
