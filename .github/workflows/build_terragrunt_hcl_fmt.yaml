@@ -69,6 +69,8 @@ jobs:
             TERRAGRUNT_VERSION=${{ steps.version.outputs.value }}
           context: terragrunt-hcl-fmt
           platforms: linux/amd64
+          provenance: false
           push: true
+          sbom: false
           tags: |
             ghcr.io/ulfiac/terragrunt-hcl-fmt:${{ steps.version.outputs.value }}

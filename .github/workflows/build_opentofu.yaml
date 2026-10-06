@@ -69,6 +69,8 @@ jobs:
             OPENTOFU_VERSION=${{ steps.version.outputs.value }}
           context: opentofu
           platforms: linux/amd64
+          provenance: false
           push: true
+          sbom: false
           tags: |
             ghcr.io/ulfiac/opentofu:${{ steps.version.outputs.value }}

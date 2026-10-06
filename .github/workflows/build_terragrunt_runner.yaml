@@ -82,6 +82,8 @@ jobs:
             AWS_CLI_VERSION=${{ steps.aws_cli_version.outputs.value }}
           context: terragrunt-runner
           platforms: linux/amd64
+          provenance: false
           push: true
+          sbom: false
           tags: |
             ghcr.io/ulfiac/terragrunt-runner:${{ steps.terragrunt_version.outputs.value }}

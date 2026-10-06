@@ -69,6 +69,8 @@ jobs:
             TFLINT_VERSION=${{ steps.version.outputs.value }}
           context: tflint
           platforms: linux/amd64
+          provenance: false
           push: true
+          sbom: false
           tags: |
             ghcr.io/ulfiac/tflint:${{ steps.version.outputs.value }}
