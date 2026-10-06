@@ -72,7 +72,9 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ steps.timestamp.outputs.value }}
           platforms: linux/arm64
+          provenance: false
           push: true
+          sbom: false
           tags: |
             ghcr.io/ulfiac/utils:latest
             ghcr.io/ulfiac/utils:${{ github.sha }}
