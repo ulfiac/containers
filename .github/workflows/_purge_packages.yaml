@@ -2,7 +2,7 @@ name: _purge_packages
 
 on:
   schedule:
-    - cron: '51 8 * * *'  # daily, 08:51 UTC (03:51 EST, 04:51 EDT)
+    - cron: '51 8 * * 5'  # every Friday, 08:51 UTC (03:51 EST, 04:51 EDT)
   workflow_dispatch:
 
 permissions:
