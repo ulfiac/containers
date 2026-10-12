@@ -1,11 +1,11 @@
 # Manifest only, not a real root module -- see README.md "Pre-mirrored terraform providers".
 terraform {
-  required_version = "1.16.4"
+  required_version = "1.16.5"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "6.66.0"
+      version = "6.67.0"
     }
     archive = {
       source  = "hashicorp/archive"
