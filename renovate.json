@@ -47,6 +47,7 @@
   "packageRules": [
     {
       "groupName": "Monday packages",
+      "groupSingleUpdates": true,
       "matchPackageNames": [
         "actions/checkout",
         "alpine",
@@ -78,6 +79,7 @@
     {
       "automerge": true,
       "groupName": "commons packages",
+      "groupSingleUpdates": true,
       "matchPackageNames": [
         "ulfiac/commons"
       ]
