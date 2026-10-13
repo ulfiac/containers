@@ -39,6 +39,7 @@
   ],
   "extends": [
     "config:recommended",
+    ":disableDependencyDashboard",
     "mergeConfidence:all-badges"
   ],
   "labels": [
