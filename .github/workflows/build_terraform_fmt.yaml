@@ -74,3 +74,11 @@ jobs:
           sbom: false
           tags: |
             ghcr.io/ulfiac/terraform-fmt:${{ steps.version.outputs.value }}
+
+  trigger-renovate:
+    if: github.event_name != 'pull_request'
+    uses: ulfiac/commons/.github/workflows/reusable_trigger_renovate.yaml@756a01bfff11f15e99984cf04d25b68122ce911a # v1.0.61
+    needs: build-image
+    secrets:
+      ACTIONS_BOT_APP_CLIENT_ID: ${{ secrets.ACTIONS_BOT_APP_CLIENT_ID }}
+      ACTIONS_BOT_APP_PRIVATE_KEY: ${{ secrets.ACTIONS_BOT_APP_PRIVATE_KEY }}
