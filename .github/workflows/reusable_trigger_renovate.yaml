@@ -8,19 +8,12 @@ on:
       ACTIONS_BOT_APP_PRIVATE_KEY:
         required: true
 
-concurrency:
-  group: trigger-renovate
-  cancel-in-progress: false
-
 permissions: {}
 
 jobs:
   trigger-renovate:
     runs-on: ubuntu-26.04
     steps:
-      - name: sleep for 5 minutes
-        run: sleep 300
-
       - name: get github app token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         id: app-token
