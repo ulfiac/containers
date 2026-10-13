@@ -77,7 +77,7 @@ jobs:
 
   trigger-renovate:
     if: github.event_name != 'pull_request'
-    uses: ulfiac/commons/.github/workflows/reusable_trigger_renovate.yaml@756a01bfff11f15e99984cf04d25b68122ce911a # v1.0.61
+    uses: ulfiac/commons/.github/workflows/reusable_trigger_renovate.yaml@1a476fbefa8137d348bd4c4ea1ea9d164d1fb78d # v1.0.62
     needs: build-image
     secrets:
       ACTIONS_BOT_APP_CLIENT_ID: ${{ secrets.ACTIONS_BOT_APP_CLIENT_ID }}
