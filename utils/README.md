@@ -1,8 +1,8 @@
 # utils
 
 General-purpose scanning/utility image (`gnupg`, `nmap`, `ca-certificates`), not
-built around a single pinned CLI version. Runs on `ubuntu-24.04-arm`/`linux/arm64`
-only, and has no `ENTRYPOINT`, unlike the other single-purpose images in this repo.
+built around a single pinned CLI version. Runs on `linux/arm64` only, and has no
+`ENTRYPOINT`, unlike the other single-purpose images in this repo.
 
 ## `nmap` capability
 The image grants `cap_net_raw+eip` to the `nmap` binary via `setcap` so the
