@@ -67,7 +67,8 @@
         "integrations/github",
         "opentofu/opentofu",
         "terraform-linters/tflint",
-        "terraform-linters/tflint-ruleset-aws"
+        "terraform-linters/tflint-ruleset-aws",
+        "terraform-linters/tflint-ruleset-terraform"
       ],
       "minimumReleaseAge": "7 days",
       "reviewers": [
