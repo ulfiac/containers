@@ -47,7 +47,7 @@
   ],
   "packageRules": [
     {
-      "groupName": "Monday packages",
+      "groupName": "Monday packages (4 of 4)",
       "groupSingleUpdates": true,
       "matchPackageNames": [
         "actions/checkout",
@@ -80,7 +80,7 @@
     },
     {
       "automerge": true,
-      "groupName": "commons packages",
+      "groupName": "reusables in commons repo (3 of 3)",
       "groupSingleUpdates": true,
       "matchPackageNames": [
         "ulfiac/commons"
