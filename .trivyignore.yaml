@@ -4,6 +4,7 @@ misconfigurations:
     # You should add HEALTHCHECK instruction in your docker container images to perform the health check on running containers.
     paths:
       - opentofu/Dockerfile
+      - terra-runner/Dockerfile
       - terraform-fmt/Dockerfile
       - terragrunt-hcl-fmt/Dockerfile
       - terragrunt-runner/Dockerfile

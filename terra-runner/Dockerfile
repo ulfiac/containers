@@ -1,0 +1,88 @@
+FROM debian:bookworm-slim@sha256:abd67ffcfa541b485a3dff59865ab629aa048a6c613e639d36e7456b0b229241
+
+ARG TERRAFORM_VERSION
+ARG TERRAGRUNT_VERSION
+ARG AWS_CLI_VERSION
+
+LABEL org.opencontainers.image.title="terra-runner" \
+      org.opencontainers.image.description="terraform, terragrunt, and the AWS CLI (arm64)" \
+      org.opencontainers.image.source="https://github.com/ulfiac/containers"
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bsdextrautils \
+    ca-certificates \
+    curl \
+    git \
+    gnupg \
+    jq \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Terraform
+RUN set -eux; \
+    ARCH="arm64"; \
+    ZIP="terraform_${TERRAFORM_VERSION}_linux_${ARCH}.zip"; \
+    cd /tmp; \
+    curl -fsSL \
+        "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/${ZIP}" \
+        -o "${ZIP}"; \
+    curl -fsSL \
+        "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_SHA256SUMS" \
+        -o terraform_SHA256SUMS; \
+    grep -F " ${ZIP}" terraform_SHA256SUMS > terraform_SHA256SUMS.filtered; \
+    sha256sum -c terraform_SHA256SUMS.filtered; \
+    unzip "${ZIP}" -d /usr/local/bin; \
+    rm "${ZIP}" terraform_SHA256SUMS terraform_SHA256SUMS.filtered; \
+    terraform --version
+
+# Install Terragrunt
+RUN set -eux; \
+    ARCH="arm64"; \
+    BINARY="terragrunt_linux_${ARCH}"; \
+    cd /tmp; \
+    curl -fsSL \
+        "https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/${BINARY}" \
+        -o "${BINARY}"; \
+    curl -fsSL \
+        "https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/SHA256SUMS" \
+        -o SHA256SUMS; \
+    grep " ${BINARY}$" SHA256SUMS > SHA256SUMS.filtered; \
+    sha256sum -c SHA256SUMS.filtered; \
+    install -m 0755 "${BINARY}" /usr/local/bin/terragrunt; \
+    rm "${BINARY}" SHA256SUMS SHA256SUMS.filtered; \
+    terragrunt --version
+
+# Install AWS CLI -- see README.md "Why the AWS CLI is included"
+COPY aws-cli-pubkey.asc /tmp/aws-cli-pubkey.asc
+RUN set -eux; \
+    ARCH="aarch64"; \
+    ZIP="awscli-exe-linux-${ARCH}-${AWS_CLI_VERSION}.zip"; \
+    cd /tmp; \
+    curl -fsSL "https://awscli.amazonaws.com/${ZIP}" -o "${ZIP}"; \
+    curl -fsSL "https://awscli.amazonaws.com/${ZIP}.sig" -o "${ZIP}.sig"; \
+    GNUPGHOME="$(mktemp -d)"; \
+    export GNUPGHOME; \
+    gpg --import aws-cli-pubkey.asc; \
+    gpg --verify "${ZIP}.sig" "${ZIP}"; \
+    unzip -q "${ZIP}"; \
+    ./aws/install; \
+    rm -rf "${ZIP}" "${ZIP}.sig" aws aws-cli-pubkey.asc "$GNUPGHOME"; \
+    aws --version
+
+# Install Terraform providers (as a providers mirror) -- see README.md "Pre-mirrored terraform providers"
+COPY providers.tf /tmp/provider-manifest/providers.tf
+RUN set -eux; \
+    terraform -chdir=/tmp/provider-manifest providers mirror \
+        -platform=linux_arm64 \
+        /opt/terraform-providers-mirror; \
+    rm -rf /tmp/provider-manifest
+
+COPY cli-config.tfrc /etc/terraform/cli-config.tfrc
+RUN chmod -R a+rX /opt/terraform-providers-mirror /etc/terraform
+
+ENV TF_CLI_CONFIG_FILE=/etc/terraform/cli-config.tfrc
+
+RUN addgroup --gid 1001 terra-runner && \
+    adduser --disabled-password --gecos "" --uid 1001 --gid 1001 terra-runner
+
+USER 1001:1001
