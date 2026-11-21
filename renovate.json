@@ -51,6 +51,7 @@
       "groupSingleUpdates": true,
       "matchPackageNames": [
         "actions/checkout",
+        "actions/create-github-app-token",
         "alpine",
         "aquasecurity/trivy-action",
         "aws/aws-cli",
