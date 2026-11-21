@@ -30,6 +30,7 @@
       "depNameTemplate": "aws/aws-cli",
       "datasourceTemplate": "github-tags",
       "managerFilePatterns": [
+        "terra-runner/.aws-cli-version",
         "terragrunt-runner/.aws-cli-version"
       ],
       "matchStrings": [

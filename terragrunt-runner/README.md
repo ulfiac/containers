@@ -125,7 +125,8 @@ but isn't worth the added build complexity for 5 providers.
 
 ## Linting `providers.tf`
 
-`providers.tf` is the only `*.tf` file in this repo, so `_linter.yaml` enables
+The `providers.tf` files (in `terragrunt-runner` and `terra-runner`) are the only
+`*.tf` files in this repo, so `_linter.yaml` enables
 `terraform-fmt` (real value, zero false positives so far -- catches HCL formatting
 drift) but leaves `tflint` disabled. tflint's default rules assume `providers.tf` is a
 conventional root module: it expects `variables.tf`/`outputs.tf` and each declared

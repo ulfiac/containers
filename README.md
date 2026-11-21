@@ -6,6 +6,7 @@ docker://...` actions.
 
 ## Images
 - [opentofu](opentofu) — pinned OpenTofu CLI
+- [terra-runner](terra-runner) — arm64-only variant of `terragrunt-runner`
 - [terraform-fmt](terraform-fmt) — pinned Terraform CLI, entrypoint `terraform fmt`
 - [terragrunt-hcl-fmt](terragrunt-hcl-fmt) — pinned Terragrunt CLI, entrypoint `terragrunt hcl fmt`
 - [terragrunt-runner](terragrunt-runner) — Terraform + Terragrunt job container for `ulfiac/infra`
@@ -18,7 +19,7 @@ to a single image belongs in that image's own README instead.
 
 - Base image is `alpine`, pinned by digest, unless a container has a documented
   reason not to be (see [terragrunt-runner/README.md](terragrunt-runner/README.md)
-  for the one exception).
+  for the one exception, shared by its arm64 variant `terra-runner`).
 - Every image runs as a non-root user (`USER 1001:1001`, or `1000:1000` for
   `utils`), created explicitly in the Dockerfile rather than relying on a base
   image default.
