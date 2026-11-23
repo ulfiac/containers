@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   reusable-linter:
-    uses: ulfiac/commons/.github/workflows/reusable_linter.yaml@e6b4e1a73941d761aaf032000a70d4b86baf8b37 # v1.0.79
+    uses: ulfiac/commons/.github/workflows/reusable_linter.yaml@af9746452119a33b4ba0927f95f45795d8786476 # v1.0.80
     with:
       terragrunt-hcl-fmt: false
       tflint: false
